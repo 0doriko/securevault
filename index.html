@@ -5,32 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SecureVault — Encrypted Sharing</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
- 
+
 :root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface-2: #1a1a24;
-  --surface-3: #22222f;
-  --border: #2a2a3a;
-  --border-glow: #3b3b5c;
-  --text: #e8e8f0;
-  --text-dim: #8888a0;
-  --text-faint: #55556a;
-  --accent: #00e5a0;
-  --accent-dim: #00b37d;
-  --accent-glow: rgba(0, 229, 160, 0.15);
-  --danger: #ff4466;
-  --danger-glow: rgba(255, 68, 102, 0.15);
-  --warning: #ffaa00;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f7f7f5;
+  --surface-3: #efefed;
+  --border: #e0e0dc;
+  --text: #1e1e1c;
+  --text-dim: #6b6b68;
+  --text-faint: #a8a8a4;
+  --accent: #0061fe;
+  --accent-dim: #0052d9;
+  --accent-glow: rgba(0, 97, 254, 0.08);
+  --danger: #c8002a;
+  --danger-glow: rgba(200, 0, 42, 0.08);
+  --warning: #b45309;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'SF Mono', 'Fira Code', monospace;
 }
- 
+
 html { font-size: 16px; }
- 
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -39,271 +38,193 @@ body {
   overflow-x: hidden;
   line-height: 1.6;
 }
- 
-/* Background grid */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
-}
- 
-/* Floating glow orbs */
-body::after {
-  content: '';
-  position: fixed;
-  top: -200px;
-  right: -200px;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0,229,160,0.04) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
- 
+
 .app-container {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: 48px 24px 80px;
 }
- 
+
 /* Header */
 .header {
   text-align: center;
-  margin-bottom: 48px;
-  animation: fadeDown 0.8s ease;
+  margin-bottom: 40px;
 }
- 
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
- 
+
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
- 
+
 .logo-icon {
-  width: 44px;
-  height: 44px;
-  border: 2px solid var(--accent);
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-glow);
-  box-shadow: 0 0 30px rgba(0,229,160,0.1);
 }
- 
-.logo-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; }
- 
+
+.logo-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; }
+
 .logo-text {
-  font-family: var(--mono);
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
   color: var(--text);
 }
- 
+
 .logo-text span { color: var(--accent); }
- 
+
 .subtitle {
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   color: var(--text-dim);
   font-weight: 400;
-  letter-spacing: 0.3px;
 }
- 
-/* Security badge row */
-.badges {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
- 
-.badge {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  font-weight: 500;
-  padding: 5px 12px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  background: var(--surface);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
- 
-.badge.green { border-color: rgba(0,229,160,0.3); color: var(--accent); background: var(--accent-glow); }
- 
+
 /* Main panels */
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px;
-  margin-bottom: 24px;
-  animation: fadeUp 0.6s ease both;
-  position: relative;
-  overflow: hidden;
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
 }
- 
-.panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
-}
- 
+
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
- 
+
+.panel { animation: fadeUp 0.4s ease both; }
+
 .panel-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-dim);
-  margin-bottom: 20px;
+  letter-spacing: 0.8px;
+  color: var(--text-faint);
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
- 
+
 .panel-title .dot {
-  width: 6px; height: 6px;
+  width: 5px; height: 5px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
 }
- 
+
 /* Textarea */
 .msg-input {
   width: 100%;
-  min-height: 140px;
-  background: var(--bg);
+  min-height: 130px;
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 14px;
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.88rem;
-  line-height: 1.7;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  line-height: 1.6;
   resize: vertical;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
- 
+
 .msg-input:focus {
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
+  background: #fff;
 }
- 
-.msg-input::placeholder {
-  color: var(--text-faint);
-  font-style: italic;
-}
- 
+
+.msg-input::placeholder { color: var(--text-faint); }
+
 /* Drop zone */
 .dropzone {
-  border: 2px dashed var(--border);
-  border-radius: 12px;
-  padding: 32px;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px;
+  padding: 28px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 16px;
-  background: rgba(0,0,0,0.2);
-  position: relative;
+  transition: all 0.2s;
+  margin-top: 12px;
+  background: var(--surface-2);
 }
- 
+
 .dropzone:hover, .dropzone.dragover {
   border-color: var(--accent);
   background: var(--accent-glow);
 }
- 
+
 .dropzone-icon {
-  width: 48px; height: 48px;
-  margin: 0 auto 12px;
+  width: 36px; height: 36px;
+  margin: 0 auto 10px;
   stroke: var(--text-faint);
-  transition: stroke 0.3s;
+  transition: stroke 0.2s;
 }
- 
+
 .dropzone:hover .dropzone-icon { stroke: var(--accent); }
- 
+
 .dropzone-text {
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   color: var(--text-dim);
 }
- 
-.dropzone-text strong { color: var(--accent); cursor: pointer; }
- 
+
+.dropzone-text strong { color: var(--accent); cursor: pointer; font-weight: 500; }
+
 .dropzone-hint {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--text-faint);
-  margin-top: 6px;
-  font-family: var(--mono);
+  margin-top: 4px;
 }
- 
+
 /* File preview */
 .file-preview {
   display: none;
-  margin-top: 16px;
-  padding: 14px 16px;
+  margin-top: 12px;
+  padding: 12px 14px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   align-items: center;
   gap: 12px;
 }
- 
+
 .file-preview.visible { display: flex; }
- 
+
 .file-icon {
-  width: 36px; height: 36px;
-  background: var(--surface-3);
-  border-radius: 8px;
+  width: 32px; height: 32px;
+  background: var(--accent-glow);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
- 
-.file-icon svg { width: 18px; height: 18px; stroke: var(--accent); fill: none; }
- 
+
+.file-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; }
+
 .file-info { flex: 1; min-width: 0; }
- 
+
 .file-name {
-  font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
- 
+
 .file-size {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--text-faint);
 }
- 
+
 .file-remove {
   background: none;
   border: none;
@@ -311,191 +232,164 @@ body::after {
   cursor: pointer;
   padding: 4px;
   transition: color 0.2s;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1;
 }
- 
+
 .file-remove:hover { color: var(--danger); }
- 
+
 /* Expiry selector */
 .expiry-row {
   display: flex;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 6px;
+  margin-top: 16px;
   flex-wrap: wrap;
 }
- 
+
 .expiry-btn {
-  font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 6px 14px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--surface-2);
   color: var(--text-dim);
   cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.3px;
+  transition: all 0.15s;
 }
- 
-.expiry-btn:hover { border-color: var(--text-faint); color: var(--text); }
- 
+
+.expiry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 .expiry-btn.active {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-glow);
-  box-shadow: 0 0 12px rgba(0,229,160,0.08);
 }
- 
+
 .expiry-label {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--text-faint);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-top: 18px;
   margin-bottom: 8px;
 }
- 
+
 /* Encrypt button */
 .encrypt-btn {
   width: 100%;
-  padding: 16px;
+  padding: 13px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent-dim), var(--accent));
-  color: var(--bg);
-  font-family: var(--mono);
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 24px;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 20px;
 }
- 
-.encrypt-btn:hover {
-  box-shadow: 0 0 40px rgba(0,229,160,0.25);
-  transform: translateY(-1px);
-}
- 
-.encrypt-btn:active { transform: translateY(0); }
- 
+
+.encrypt-btn:hover { background: var(--accent-dim); }
+.encrypt-btn:active { transform: scale(0.99); }
+
 .encrypt-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
- 
+
 /* Output area */
 .output-panel {
   display: none;
-  animation: fadeUp 0.5s ease both;
+  animation: fadeUp 0.4s ease both;
 }
- 
+
 .output-panel.visible { display: block; }
- 
+
 .url-box {
-  background: var(--bg);
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 14px;
   font-family: var(--mono);
   font-size: 0.78rem;
   color: var(--accent);
   word-break: break-all;
   line-height: 1.7;
-  max-height: 160px;
+  max-height: 140px;
   overflow-y: auto;
   user-select: all;
 }
- 
+
 .copy-btn {
   width: 100%;
-  padding: 14px;
-  border: 2px solid var(--accent);
-  border-radius: 10px;
-  background: transparent;
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 12px;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-top: 10px;
+  transition: all 0.15s;
 }
- 
-.copy-btn:hover {
-  background: var(--accent-glow);
-  box-shadow: 0 0 20px rgba(0,229,160,0.1);
-}
- 
+
+.copy-btn:hover { background: var(--surface-2); border-color: var(--accent); color: var(--accent); }
+
 .meta-info {
   display: flex;
   gap: 20px;
-  margin-top: 16px;
+  margin-top: 14px;
   flex-wrap: wrap;
 }
- 
+
 .meta-item {
-  font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--text-faint);
 }
- 
+
 .meta-item span { color: var(--text-dim); }
- 
+
 .size-warning {
-  margin-top: 14px;
-  padding: 12px 16px;
+  margin-top: 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   background: var(--danger-glow);
-  border: 1px solid rgba(255,68,102,0.3);
+  border: 1px solid rgba(200,0,42,0.2);
   font-size: 0.8rem;
   color: var(--danger);
   display: none;
 }
- 
+
 .size-warning.visible { display: block; }
- 
+
 /* Decrypt view */
-.decrypt-panel {
-  text-align: center;
-}
- 
-.decrypt-status {
-  margin: 24px 0;
-}
- 
+.decrypt-panel { text-align: center; }
+.decrypt-status { margin: 24px 0; }
+
 .spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border);
+  width: 32px; height: 32px;
+  border: 2.5px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
-  margin: 0 auto 16px;
+  margin: 0 auto 14px;
 }
- 
+
 @keyframes spin { to { transform: rotate(360deg); } }
- 
-.decrypt-result {
-  text-align: left;
-}
- 
+
+.decrypt-result { text-align: left; }
+
 .decrypted-text {
-  background: var(--bg);
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 16px;
   font-family: var(--mono);
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   line-height: 1.7;
   color: var(--text);
   white-space: pre-wrap;
@@ -503,180 +397,167 @@ body::after {
   max-height: 500px;
   overflow-y: auto;
 }
- 
-.decrypted-file {
-  text-align: center;
-  padding: 20px;
-}
- 
+
+.decrypted-file { text-align: center; padding: 16px; }
+
 .decrypted-file img {
   max-width: 100%;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--border);
 }
- 
+
 .download-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
-  border: 2px solid var(--accent);
-  border-radius: 10px;
+  padding: 12px 24px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
   background: transparent;
   color: var(--accent);
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 16px;
-  transition: all 0.3s;
+  margin-top: 14px;
+  transition: all 0.15s;
   text-decoration: none;
 }
- 
-.download-btn:hover {
-  background: var(--accent-glow);
-}
- 
+
+.download-btn:hover { background: var(--accent-glow); }
+
 /* Error / expired state */
 .error-state {
   text-align: center;
   padding: 40px 20px;
 }
- 
+
 .error-icon {
-  width: 64px; height: 64px;
-  margin: 0 auto 20px;
+  width: 48px; height: 48px;
+  margin: 0 auto 16px;
   stroke: var(--danger);
 }
- 
+
 .error-title {
-  font-family: var(--mono);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--danger);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
- 
+
 .error-msg {
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   color: var(--text-dim);
 }
- 
-/* Expired state */
+
 .expired-icon { stroke: var(--warning); }
 .expired-title { color: var(--warning); }
- 
+
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
- 
+
 /* Responsive */
 @media (max-width: 600px) {
   .app-container { padding: 24px 16px 60px; }
-  .panel { padding: 24px 20px; }
-  .logo-text { font-size: 1.3rem; }
-  .meta-info { flex-direction: column; gap: 8px; }
+  .panel { padding: 20px; }
+  .meta-info { flex-direction: column; gap: 6px; }
 }
- 
-/* Toast notification */
+
+/* Toast */
 .toast {
   position: fixed;
-  bottom: 30px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--mono);
+  background: var(--text);
+  color: #fff;
   font-size: 0.82rem;
-  font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 10px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 8px;
   z-index: 999;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: none;
-  box-shadow: 0 8px 30px rgba(0,229,160,0.3);
 }
- 
+
 .toast.show { transform: translateX(-50%) translateY(0); }
- 
+
 /* Password input */
 .password-row {
   display: flex;
-  gap: 10px;
-  margin-top: 16px;
+  gap: 8px;
+  margin-top: 14px;
   align-items: center;
 }
- 
+
 .password-input {
   flex: 1;
-  padding: 10px 14px;
-  background: var(--bg);
+  padding: 9px 12px;
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.82rem;
+  font-family: var(--sans);
+  font-size: 0.875rem;
   outline: none;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
- 
+
 .password-input:focus {
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: #fff;
 }
- 
+
 .password-input::placeholder { color: var(--text-faint); }
- 
+
 .password-toggle {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  padding: 10px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 9px 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface-2);
   color: var(--text-dim);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   white-space: nowrap;
 }
- 
-.password-toggle:hover { border-color: var(--text-faint); color: var(--text); }
- 
+
+.password-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
 /* Decrypt password entry */
 .decrypt-password-panel {
-  max-width: 400px;
+  max-width: 380px;
   margin: 0 auto;
   text-align: center;
 }
- 
+
 .decrypt-password-panel .password-input {
   width: 100%;
   text-align: center;
-  margin-top: 16px;
+  margin-top: 14px;
 }
- 
+
 .decrypt-submit {
-  margin-top: 12px;
-  padding: 12px 32px;
+  margin-top: 10px;
+  padding: 11px 28px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--accent);
-  color: var(--bg);
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  font-weight: 700;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.2s;
 }
- 
-.decrypt-submit:hover {
-  box-shadow: 0 0 30px rgba(0,229,160,0.25);
-}
+
+.decrypt-submit:hover { background: var(--accent-dim); }
 </style>
 </head>
 <body>
- 
+
 <div class="app-container">
   <!-- HEADER -->
   <div class="header">
@@ -690,16 +571,15 @@ body::after {
       <div class="logo-text">Secure<span>Vault</span></div>
     </div>
     <div class="subtitle">End-to-end encrypted sharing — nothing leaves your browser unencrypted</div>
- 
   </div>
- 
+
   <!-- ENCRYPT VIEW -->
   <div id="encryptView">
     <div class="panel" style="animation-delay: 0.1s">
       <div class="panel-title"><span class="dot"></span> Compose Secret</div>
- 
+
       <textarea class="msg-input" id="msgInput" placeholder="Type your secret message here..."></textarea>
- 
+
       <!-- Drop zone -->
       <div class="dropzone" id="dropzone">
         <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -711,7 +591,7 @@ body::after {
         <div class="dropzone-hint">Screenshots, PDFs, images, documents — up to 1.5 MB</div>
         <input type="file" id="fileInput" hidden>
       </div>
- 
+
       <div class="file-preview" id="filePreview">
         <div class="file-icon">
           <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -725,15 +605,15 @@ body::after {
         </div>
         <button class="file-remove" id="fileRemove" title="Remove file">&times;</button>
       </div>
- 
+
       <!-- Auto-generated password -->
       <div class="expiry-label">Auto-generated password</div>
       <div class="password-row">
-        <input type="text" class="password-input" id="passwordInput" id="passwordDisplay" readonly autocomplete="off" style="font-family:var(--mono);letter-spacing:1px;color:var(--accent);">
-        <button class="password-toggle" id="regenBtn" title="Generate new password">&#8635; New</button>
+        <input type="text" class="password-input" id="passwordInput" readonly autocomplete="off" style="font-family:var(--mono);font-size:0.82rem;letter-spacing:0.5px;">
+        <button class="password-toggle" id="regenBtn">&#x21bb; New</button>
       </div>
-      <div style="font-size:0.72rem;color:var(--text-faint);margin-top:6px;font-family:var(--mono);">Share this password separately — recipient will need it to decrypt.</div>
- 
+      <div style="font-size:0.75rem;color:var(--text-faint);margin-top:6px;">Share this password separately — never in the same message as the link.</div>
+
       <!-- Expiry -->
       <div class="expiry-label">Link expires in</div>
       <div class="expiry-row">
@@ -743,45 +623,46 @@ body::after {
         <button class="expiry-btn" data-mins="1440">24 hours</button>
         <button class="expiry-btn" data-mins="10080">7 days</button>
       </div>
- 
+
       <button class="encrypt-btn" id="encryptBtn">
         <svg style="display:inline;vertical-align:middle;margin-right:8px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Encrypt &amp; Generate Link
       </button>
     </div>
- 
+
     <!-- Output -->
     <div class="panel output-panel" id="outputPanel">
-      <div class="panel-title"><span class="dot"></span> Encrypted Link</div>
+      <div class="panel-title"><span class="dot"></span> Your Secret Link</div>
       <div class="url-box" id="urlBox"></div>
-      <button class="copy-btn" id="copyBtn">Copy Link to Clipboard</button>
-      <div id="outputPasswordBlock" style="margin-top:16px;padding:14px 16px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.25);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-        <div>
-          <div style="font-family:var(--mono);font-size:0.68rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Password to share</div>
-          <div id="outputPassword" style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--accent);letter-spacing:2px;"></div>
-        </div>
-        <button id="copyPasswordBtn" style="font-family:var(--mono);font-size:0.72rem;padding:8px 14px;border:1px solid rgba(0,229,160,0.4);border-radius:8px;background:transparent;color:var(--accent);cursor:pointer;white-space:nowrap;transition:all 0.2s;">Copy Password</button>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="copy-btn" id="copyBtn" style="flex:1;margin-top:0;">Copy link</button>
+        <button class="copy-btn" id="copyPwBtn" style="flex:1;margin-top:0;">Copy password</button>
+      </div>
+      <div style="margin-top:12px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;">
+        <div style="font-size:0.72rem;color:var(--text-faint);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">Password (share separately)</div>
+        <div id="outputPassword" style="font-family:var(--mono);font-size:0.9rem;color:var(--text);font-weight:500;letter-spacing:1px;"></div>
       </div>
       <div class="meta-info">
         <div class="meta-item">Expires: <span id="metaExpiry">—</span></div>
-        <div class="meta-item">Payload: <span id="metaSize">—</span></div>
+        <div class="meta-item">Storage: <span>Local (this browser only)</span></div>
+        <div class="meta-item">Encryption: <span>AES-256-GCM</span></div>
       </div>
-      <div class="size-warning" id="sizeWarning">
-        ⚠ The generated URL is very long. Some browsers or apps may truncate it. Consider using a shorter message or smaller file.
+      <div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:0.78rem;color:#92400e;">
+        Demo mode: link only works on this browser/device. See code comments for Firebase upgrade.
       </div>
     </div>
   </div>
- 
+
   <!-- DECRYPT VIEW -->
   <div id="decryptView" style="display:none">
     <div class="panel decrypt-panel">
       <div class="panel-title"><span class="dot"></span> Decrypting Secret</div>
- 
+
       <div class="decrypt-status" id="decryptStatus">
         <div class="spinner"></div>
         <div style="color: var(--text-dim); font-size: 0.88rem;">Decrypting payload…</div>
       </div>
- 
+
       <!-- Password prompt (hidden by default) -->
       <div id="decryptPasswordPrompt" style="display:none">
         <div class="decrypt-password-panel">
@@ -797,10 +678,10 @@ body::after {
           <div id="decryptPasswordError" style="color:var(--danger);font-size:0.8rem;margin-top:10px;display:none;">Incorrect password. Please try again.</div>
         </div>
       </div>
- 
+
       <!-- Result -->
       <div class="decrypt-result" id="decryptResult" style="display:none"></div>
- 
+
       <!-- Error -->
       <div class="error-state" id="errorState" style="display:none">
         <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -811,7 +692,7 @@ body::after {
         <div class="error-title" id="errorTitle">Decryption Failed</div>
         <div class="error-msg" id="errorMsg">The link may be corrupted or tampered with.</div>
       </div>
- 
+
       <!-- Expired -->
       <div class="error-state" id="expiredState" style="display:none">
         <svg class="error-icon expired-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -822,24 +703,104 @@ body::after {
         <div class="error-msg" id="expiredMsg">This secret has expired and can no longer be viewed.</div>
       </div>
     </div>
- 
+
     <!-- Create new -->
     <div style="text-align:center;margin-top:20px;">
       <a href="?" style="color:var(--accent);font-family:var(--mono);font-size:0.84rem;text-decoration:none;border-bottom:1px dashed var(--accent);">Create a new secret →</a>
     </div>
   </div>
 </div>
- 
+
 <div class="toast" id="toast">Copied to clipboard</div>
- 
+
 <script>
 (function() {
   'use strict';
- 
+
+  // ##############################################################
+  // ## STORAGE LAYER
+  // ##
+  // ## CURRENT: localStorage — stores encrypted data in this
+  // ## browser only. Works for demos on a single device.
+  // ##
+  // ## TO UPGRADE TO PRODUCTION (Firebase):
+  // ## 1. Get approval from IT/security for Firebase (Google Cloud)
+  // ## 2. Create a free Firebase project at console.firebase.google.com
+  // ## 3. Enable Firestore database (start in test mode initially)
+  // ## 4. Replace saveSecret() and loadSecret() below with:
+  // ##
+  // ##    async function saveSecret(id, data) {
+  // ##      await db.collection('secrets').doc(id).set(data);
+  // ##    }
+  // ##    async function loadSecret(id) {
+  // ##      const doc = await db.collection('secrets').doc(id).get();
+  // ##      return doc.exists ? doc.data() : null;
+  // ##    }
+  // ##
+  // ## 5. Add Firebase security rules to auto-delete after expiry
+  // ## 6. With Firebase, links work across any device/browser
+  // ##
+  // ## OTHER APPROVED ALTERNATIVES:
+  // ## - AWS S3 + Lambda (if company uses AWS)
+  // ## - Azure Blob Storage (if company uses Azure)
+  // ## - Dropbox API — store encrypted blobs in a shared Dropbox folder
+  // ##############################################################
+
+  function saveSecret(id, data) {
+    // ## REPLACE THIS with Firebase/server call when approved
+    localStorage.setItem('sv_' + id, JSON.stringify(data));
+  }
+
+  function loadSecret(id) {
+    // ## REPLACE THIS with Firebase/server call when approved
+    const raw = localStorage.getItem('sv_' + id);
+    return raw ? JSON.parse(raw) : null;
+  }
+
+  function deleteSecret(id) {
+    // ## REPLACE THIS with Firebase/server call when approved
+    localStorage.removeItem('sv_' + id);
+  }
+
+  // ##############################################################
+  // ## PASSWORD GENERATION
+  // ##
+  // ## Generates a random 16-character password using letters,
+  // ## numbers, and symbols. Cryptographically random (uses
+  // ## crypto.getRandomValues — same standard as the encryption).
+  // ##
+  // ## The password is always auto-generated and shown to the
+  // ## sender. They must share it with the recipient separately
+  // ## (e.g. via Slack, phone, or in-person) — never in the
+  // ## same message as the link. This is called "out-of-band"
+  // ## sharing and is a security best practice.
+  // ##############################################################
+
+  function generatePassword() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%';
+    const arr = crypto.getRandomValues(new Uint8Array(16));
+    return Array.from(arr).map(b => chars[b % chars.length]).join('');
+  }
+
+  // ##############################################################
+  // ## SHORT ID GENERATION
+  // ##
+  // ## Generates a short 8-character random ID (e.g. "a3f9k2xp")
+  // ## used as the URL fragment: yoursite.github.io/#a3f9k2xp
+  // ## The encrypted data is stored separately (localStorage now,
+  // ## Firebase later) and retrieved using this ID.
+  // ##############################################################
+
+  function generateId() {
+    const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
+    const arr = crypto.getRandomValues(new Uint8Array(8));
+    return Array.from(arr).map(b => chars[b % chars.length]).join('');
+  }
+
   // ─── State ───
   let selectedFile = null;
-  let selectedExpiry = 5; // minutes
- 
+  let selectedExpiry = 5;
+
   // ─── Elements ───
   const $ = id => document.getElementById(id);
   const encryptView = $('encryptView');
@@ -850,20 +811,28 @@ body::after {
   const filePreview = $('filePreview');
   const fileRemove = $('fileRemove');
   const passwordInput = $('passwordInput');
-  const passwordToggle = $('passwordToggle');
+  const regenBtn = $('regenBtn');
   const encryptBtn = $('encryptBtn');
   const outputPanel = $('outputPanel');
   const urlBox = $('urlBox');
   const copyBtn = $('copyBtn');
+  const copyPwBtn = $('copyPwBtn');
   const toast = $('toast');
- 
+
+  // ─── Generate initial password on load ───
+  passwordInput.value = generatePassword();
+
+  regenBtn.addEventListener('click', () => {
+    passwordInput.value = generatePassword();
+  });
+
   // ─── Routing: if hash present, go to decrypt ───
   if (window.location.hash && window.location.hash.length > 1) {
     encryptView.style.display = 'none';
     decryptView.style.display = 'block';
     handleDecrypt();
   }
- 
+
   // ─── Expiry buttons ───
   document.querySelectorAll('.expiry-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -872,20 +841,7 @@ body::after {
       selectedExpiry = parseInt(btn.dataset.mins);
     });
   });
- 
-  // ─── Auto-generate password ───
-  function generatePassword() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    const arr = crypto.getRandomValues(new Uint8Array(12));
-    return Array.from(arr).map(b => chars[b % chars.length]).join('');
-  }
- 
-  passwordInput.value = generatePassword();
- 
-  $('regenBtn').addEventListener('click', () => {
-    passwordInput.value = generatePassword();
-  });
- 
+
   // ─── File handling ───
   dropzone.addEventListener('click', () => fileInput.click());
   dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
@@ -899,191 +855,155 @@ body::after {
     if (fileInput.files.length) handleFile(fileInput.files[0]);
   });
   fileRemove.addEventListener('click', removeFile);
- 
+
   function handleFile(file) {
-    const MAX = 1.5 * 1024 * 1024; // 1.5 MB
-    if (file.size > MAX) {
-      showToast('File too large! Max 1.5 MB');
-      return;
-    }
+    const MAX = 1.5 * 1024 * 1024;
+    if (file.size > MAX) { showToast('File too large — max 1.5 MB'); return; }
     selectedFile = file;
     $('fileName').textContent = file.name;
     $('fileSize').textContent = formatBytes(file.size);
     filePreview.classList.add('visible');
   }
- 
+
   function removeFile() {
     selectedFile = null;
     fileInput.value = '';
     filePreview.classList.remove('visible');
   }
- 
+
   function formatBytes(b) {
     if (b < 1024) return b + ' B';
     if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
     return (b / 1048576).toFixed(2) + ' MB';
   }
- 
+
   // ─── Encrypt ───
   encryptBtn.addEventListener('click', async () => {
     const text = msgInput.value.trim();
-    if (!text && !selectedFile) {
-      showToast('Enter a message or add a file');
-      return;
-    }
- 
+    if (!text && !selectedFile) { showToast('Enter a message or add a file'); return; }
+
     encryptBtn.disabled = true;
     encryptBtn.textContent = 'Encrypting…';
- 
+
     try {
+      const password = passwordInput.value;
+
       // Build payload
-      const payload = {};
-      payload.exp = Date.now() + selectedExpiry * 60 * 1000;
- 
+      const payload = { exp: Date.now() + selectedExpiry * 60 * 1000 };
       if (text) payload.text = text;
- 
       if (selectedFile) {
         const buf = await selectedFile.arrayBuffer();
-        payload.file = {
-          name: selectedFile.name,
-          type: selectedFile.type,
-          data: arrayBufferToBase64(buf)
-        };
+        payload.file = { name: selectedFile.name, type: selectedFile.type, data: arrayBufferToBase64(buf) };
       }
- 
+
       const json = JSON.stringify(payload);
-      const compressed = pako.deflate(new TextEncoder().encode(json), { level: 9 });
- 
-      // Always use auto-generated password
-      const extraPass = passwordInput.value;
-      const hasPassword = true;
- 
-      // Generate random key
+      const compressed = pako.deflate(new TextEncoder().encode(json));
+
+      // Generate random key + IV
       const rawKey = crypto.getRandomValues(new Uint8Array(32));
       const iv = crypto.getRandomValues(new Uint8Array(12));
- 
-      let keyMaterial = rawKey;
- 
-      // If password, derive final key from rawKey + password via PBKDF2
-      if (hasPassword) {
-        const combined = new Uint8Array(rawKey.length + new TextEncoder().encode(extraPass).length);
-        combined.set(rawKey);
-        combined.set(new TextEncoder().encode(extraPass), rawKey.length);
-        const importedKey = await crypto.subtle.importKey('raw', combined, 'PBKDF2', false, ['deriveBits']);
-        const salt = rawKey.slice(0, 16); // use part of rawKey as salt
-        const derived = await crypto.subtle.deriveBits(
-          { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-          importedKey, 256
-        );
-        keyMaterial = new Uint8Array(derived);
-      }
- 
+
+      // Derive encryption key from rawKey + password via PBKDF2
+      // ## The password strengthens the encryption key so that
+      // ## even if someone finds the link, they still need the password
+      const combined = new Uint8Array(rawKey.length + new TextEncoder().encode(password).length);
+      combined.set(rawKey);
+      combined.set(new TextEncoder().encode(password), rawKey.length);
+      const importedKey = await crypto.subtle.importKey('raw', combined, 'PBKDF2', false, ['deriveBits']);
+      const salt = rawKey.slice(0, 16);
+      const derived = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+        importedKey, 256
+      );
+      const keyMaterial = new Uint8Array(derived);
+
       const cryptoKey = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['encrypt']);
       const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, compressed);
- 
-      // Pack: [1 byte flags][12 bytes IV][encrypted data]
-      const flags = hasPassword ? 1 : 0;
-      const packed = new Uint8Array(1 + 12 + encrypted.byteLength);
-      packed[0] = flags;
-      packed.set(iv, 1);
-      packed.set(new Uint8Array(encrypted), 13);
- 
-      // Encode key + data into fragment
-      const keyB64 = base64UrlEncode(rawKey);
-      const dataB64 = base64UrlEncode(packed);
- 
-      const url = window.location.origin + window.location.pathname + '#' + keyB64 + '.' + dataB64;
- 
+
+      // Pack: [12 bytes IV][encrypted data]
+      const packed = new Uint8Array(12 + encrypted.byteLength);
+      packed.set(iv, 0);
+      packed.set(new Uint8Array(encrypted), 12);
+
+      // Generate short ID and store encrypted blob
+      const id = generateId();
+      const expiry = payload.exp;
+
+      // ## saveSecret() currently uses localStorage.
+      // ## When upgrading to Firebase, only this function call changes —
+      // ## everything else above stays exactly the same.
+      saveSecret(id, {
+        blob: arrayBufferToBase64(packed.buffer),
+        key: arrayBufferToBase64(rawKey.buffer),
+        exp: expiry
+      });
+
+      // Build short URL — only the ID goes in the link, not the data
+      const shortUrl = window.location.origin + window.location.pathname + '#' + id;
+
       // Show result
-      urlBox.textContent = url;
-      $('outputPassword').textContent = extraPass;
+      urlBox.textContent = shortUrl;
+      $('outputPassword').textContent = password;
       outputPanel.classList.add('visible');
- 
-      const expiryDate = new Date(payload.exp);
-      $('metaExpiry').textContent = expiryDate.toLocaleString();
-      $('metaSize').textContent = formatBytes(packed.length);
- 
-      const sizeWarning = $('sizeWarning');
-      if (url.length > 50000) {
-        sizeWarning.classList.add('visible');
-      } else {
-        sizeWarning.classList.remove('visible');
-      }
- 
+      $('metaExpiry').textContent = new Date(expiry).toLocaleString();
       outputPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Reset password field for next use
+
+      // Regenerate password for next use
       passwordInput.value = generatePassword();
- 
+
     } catch(err) {
       console.error(err);
       showToast('Encryption failed: ' + err.message);
     }
- 
+
     encryptBtn.disabled = false;
-    encryptBtn.innerHTML = '<svg style="display:inline;vertical-align:middle;margin-right:8px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Encrypt &amp; Generate Link';
+    encryptBtn.innerHTML = '<svg style="display:inline;vertical-align:middle;margin-right:8px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Encrypt &amp; Generate Link';
   });
- 
-  // ─── Copy ───
+
+  // ─── Copy buttons ───
   copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(urlBox.textContent).then(() => showToast('Copied to clipboard'));
+    navigator.clipboard.writeText(urlBox.textContent).then(() => showToast('Link copied!'));
   });
- 
-  document.addEventListener('click', e => {
-    if (e.target.id === 'copyPasswordBtn') {
-      navigator.clipboard.writeText($('outputPassword').textContent).then(() => showToast('Password copied'));
-    }
+
+  copyPwBtn.addEventListener('click', () => {
+    const pw = $('outputPassword').textContent;
+    navigator.clipboard.writeText(pw).then(() => showToast('Password copied!'));
   });
- 
+
   // ─── Decrypt ───
   async function handleDecrypt() {
-    const hash = window.location.hash.slice(1);
-    const dotIdx = hash.indexOf('.');
-    if (dotIdx === -1) return showError('Invalid link', 'The link format is not recognized.');
- 
-    const keyB64 = hash.slice(0, dotIdx);
-    const dataB64 = hash.slice(dotIdx + 1);
- 
-    let rawKey, packed;
-    try {
-      rawKey = base64UrlDecode(keyB64);
-      packed = base64UrlDecode(dataB64);
-    } catch(e) {
-      return showError('Invalid link', 'Could not decode the encrypted data.');
+    const id = window.location.hash.slice(1);
+    if (!id) return showError('Invalid link', 'No secret ID found in this link.');
+
+    // ## loadSecret() currently reads from localStorage.
+    // ## When upgrading to Firebase, only this function changes.
+    const stored = loadSecret(id);
+
+    if (!stored) {
+      return showError('Not found', 'This secret does not exist on this device. Remember: demo links only work on the same browser they were created on.');
     }
- 
-    if (packed.length < 13) return showError('Invalid link', 'Data is too short.');
- 
-    const flags = packed[0];
-    const hasPassword = (flags & 1) !== 0;
-    const iv = packed.slice(1, 13);
-    const ciphertext = packed.slice(13);
- 
-    if (hasPassword) {
-      // Show password prompt
-      $('decryptStatus').style.display = 'none';
-      $('decryptPasswordPrompt').style.display = 'block';
- 
-      $('decryptSubmitBtn').addEventListener('click', async () => {
-        const pw = $('decryptPasswordInput').value;
-        await attemptDecrypt(rawKey, iv, ciphertext, pw);
-      });
- 
-      $('decryptPasswordInput').addEventListener('keydown', async (e) => {
-        if (e.key === 'Enter') {
-          const pw = $('decryptPasswordInput').value;
-          await attemptDecrypt(rawKey, iv, ciphertext, pw);
-        }
-      });
-    } else {
-      await attemptDecrypt(rawKey, iv, ciphertext, null);
+
+    // Check expiry
+    if (stored.exp && Date.now() > stored.exp) {
+      deleteSecret(id);
+      return showExpired();
     }
-  }
- 
-  async function attemptDecrypt(rawKey, iv, ciphertext, password) {
-    try {
-      let keyMaterial = rawKey;
- 
-      if (password !== null) {
+
+    // Show password prompt
+    $('decryptStatus').style.display = 'none';
+    $('decryptPasswordPrompt').style.display = 'block';
+
+    async function tryDecrypt() {
+      const password = $('decryptPasswordInput').value;
+      if (!password) { showToast('Please enter the password'); return; }
+
+      try {
+        const packed = new Uint8Array(base64ToArrayBuffer($('sv_blob_' + id) || stored.blob));
+        const rawKey = new Uint8Array(base64ToArrayBuffer(stored.key));
+        const iv = packed.slice(0, 12);
+        const ciphertext = packed.slice(12);
+
+        // Re-derive the key using stored rawKey + entered password
         const combined = new Uint8Array(rawKey.length + new TextEncoder().encode(password).length);
         combined.set(rawKey);
         combined.set(new TextEncoder().encode(password), rawKey.length);
@@ -1093,114 +1013,92 @@ body::after {
           { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
           importedKey, 256
         );
-        keyMaterial = new Uint8Array(derived);
-      }
- 
-      const cryptoKey = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['decrypt']);
-      const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, ciphertext);
- 
-      const decompressed = pako.inflate(new Uint8Array(decrypted));
-      const json = new TextDecoder().decode(decompressed);
-      const payload = JSON.parse(json);
- 
-      // Check expiry
-      if (payload.exp && Date.now() > payload.exp) {
-        return showExpired();
-      }
- 
-      // Hide status / password prompt, show result
-      $('decryptStatus').style.display = 'none';
-      $('decryptPasswordPrompt').style.display = 'none';
-      $('decryptPasswordError').style.display = 'none';
- 
-      const resultDiv = $('decryptResult');
-      resultDiv.style.display = 'block';
-      resultDiv.innerHTML = '';
- 
-      // Time remaining
-      if (payload.exp) {
-        const remaining = payload.exp - Date.now();
-        const mins = Math.floor(remaining / 60000);
-        const hrs = Math.floor(mins / 60);
-        let timeStr;
-        if (hrs > 24) timeStr = Math.floor(hrs / 24) + ' day(s)';
-        else if (hrs > 0) timeStr = hrs + 'h ' + (mins % 60) + 'm';
-        else timeStr = mins + ' min';
- 
-        const expBar = document.createElement('div');
-        expBar.style.cssText = 'font-family:var(--mono);font-size:0.75rem;color:var(--warning);margin-bottom:16px;padding:10px 14px;background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.2);border-radius:8px;';
-        expBar.textContent = '⏱ This secret expires in ' + timeStr;
-        resultDiv.appendChild(expBar);
-      }
- 
-      // Show text
-      if (payload.text) {
-        const label = document.createElement('div');
-        label.className = 'panel-title';
-        label.innerHTML = '<span class="dot"></span> Decrypted Message';
-        label.style.marginTop = '8px';
-        resultDiv.appendChild(label);
- 
-        const textBox = document.createElement('div');
-        textBox.className = 'decrypted-text';
-        textBox.textContent = payload.text;
-        resultDiv.appendChild(textBox);
-      }
- 
-      // Show file
-      if (payload.file) {
-        const label = document.createElement('div');
-        label.className = 'panel-title';
-        label.innerHTML = '<span class="dot"></span> Decrypted File';
-        label.style.marginTop = '20px';
-        resultDiv.appendChild(label);
- 
-        const fileData = base64ToArrayBuffer(payload.file.data);
-        const blob = new Blob([fileData], { type: payload.file.type || 'application/octet-stream' });
-        const objUrl = URL.createObjectURL(blob);
- 
-        // If image, show preview
-        if (payload.file.type && payload.file.type.startsWith('image/')) {
-          const imgWrap = document.createElement('div');
-          imgWrap.className = 'decrypted-file';
-          const img = document.createElement('img');
-          img.src = objUrl;
-          img.alt = payload.file.name;
-          imgWrap.appendChild(img);
-          resultDiv.appendChild(imgWrap);
+        const keyMaterial = new Uint8Array(derived);
+
+        const cryptoKey = await crypto.subtle.importKey('raw', keyMaterial, 'AES-GCM', false, ['decrypt']);
+
+        const blobData = base64ToArrayBuffer(stored.blob);
+        const packedFull = new Uint8Array(blobData);
+        const ivFull = packedFull.slice(0, 12);
+        const ciphertextFull = packedFull.slice(12);
+
+        const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ivFull }, cryptoKey, ciphertextFull);
+        const decompressed = pako.inflate(new Uint8Array(decrypted));
+        const payload = JSON.parse(new TextDecoder().decode(decompressed));
+
+        // Success — show result
+        $('decryptPasswordPrompt').style.display = 'none';
+        $('decryptPasswordError').style.display = 'none';
+
+        const resultDiv = $('decryptResult');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '';
+
+        // Time remaining
+        if (payload.exp) {
+          const mins = Math.floor((payload.exp - Date.now()) / 60000);
+          const hrs = Math.floor(mins / 60);
+          const timeStr = hrs > 24 ? Math.floor(hrs/24) + ' day(s)' : hrs > 0 ? hrs + 'h ' + (mins%60) + 'm' : mins + ' min';
+          const expBar = document.createElement('div');
+          expBar.style.cssText = 'font-size:0.78rem;color:var(--warning);margin-bottom:14px;padding:9px 12px;background:rgba(180,83,9,0.06);border:1px solid rgba(180,83,9,0.15);border-radius:8px;';
+          expBar.textContent = 'Expires in ' + timeStr;
+          resultDiv.appendChild(expBar);
         }
- 
-        // If PDF, show embed
-        if (payload.file.type === 'application/pdf') {
-          const pdfWrap = document.createElement('div');
-          pdfWrap.style.cssText = 'margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);';
-          const embed = document.createElement('embed');
-          embed.src = objUrl;
-          embed.type = 'application/pdf';
-          embed.style.cssText = 'width:100%;height:500px;';
-          pdfWrap.appendChild(embed);
-          resultDiv.appendChild(pdfWrap);
+
+        if (payload.text) {
+          const label = document.createElement('div');
+          label.className = 'panel-title';
+          label.innerHTML = '<span class="dot"></span> Decrypted message';
+          label.style.marginTop = '8px';
+          resultDiv.appendChild(label);
+          const textBox = document.createElement('div');
+          textBox.className = 'decrypted-text';
+          textBox.textContent = payload.text;
+          resultDiv.appendChild(textBox);
         }
- 
-        // Download button
-        const dl = document.createElement('a');
-        dl.href = objUrl;
-        dl.download = payload.file.name || 'file';
-        dl.className = 'download-btn';
-        dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download ' + (payload.file.name || 'file');
-        resultDiv.appendChild(dl);
-      }
- 
-    } catch(err) {
-      console.error(err);
-      if (password !== null) {
+
+        if (payload.file) {
+          const label = document.createElement('div');
+          label.className = 'panel-title';
+          label.innerHTML = '<span class="dot"></span> Decrypted file';
+          label.style.marginTop = '20px';
+          resultDiv.appendChild(label);
+          const fileData = base64ToArrayBuffer(payload.file.data);
+          const blob = new Blob([fileData], { type: payload.file.type || 'application/octet-stream' });
+          const objUrl = URL.createObjectURL(blob);
+          if (payload.file.type && payload.file.type.startsWith('image/')) {
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'decrypted-file';
+            const img = document.createElement('img');
+            img.src = objUrl; img.alt = payload.file.name;
+            imgWrap.appendChild(img);
+            resultDiv.appendChild(imgWrap);
+          }
+          if (payload.file.type === 'application/pdf') {
+            const pdfWrap = document.createElement('div');
+            pdfWrap.style.cssText = 'margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid var(--border);';
+            const embed = document.createElement('embed');
+            embed.src = objUrl; embed.type = 'application/pdf';
+            embed.style.cssText = 'width:100%;height:500px;';
+            pdfWrap.appendChild(embed);
+            resultDiv.appendChild(pdfWrap);
+          }
+          const dl = document.createElement('a');
+          dl.href = objUrl; dl.download = payload.file.name || 'file';
+          dl.className = 'download-btn';
+          dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download ' + (payload.file.name || 'file');
+          resultDiv.appendChild(dl);
+        }
+
+      } catch(err) {
         $('decryptPasswordError').style.display = 'block';
-      } else {
-        showError('Decryption Failed', 'The link may be corrupted, tampered with, or the data is invalid.');
       }
     }
+
+    $('decryptSubmitBtn').addEventListener('click', tryDecrypt);
+    $('decryptPasswordInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryDecrypt(); });
   }
- 
+
   function showError(title, msg) {
     $('decryptStatus').style.display = 'none';
     $('decryptPasswordPrompt').style.display = 'none';
@@ -1208,13 +1106,13 @@ body::after {
     $('errorTitle').textContent = title;
     $('errorMsg').textContent = msg;
   }
- 
+
   function showExpired() {
     $('decryptStatus').style.display = 'none';
     $('decryptPasswordPrompt').style.display = 'none';
     $('expiredState').style.display = 'block';
   }
- 
+
   // ─── Helpers ───
   function arrayBufferToBase64(buf) {
     const bytes = new Uint8Array(buf);
@@ -1222,37 +1120,21 @@ body::after {
     for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
     return btoa(binary);
   }
- 
+
   function base64ToArrayBuffer(b64) {
     const binary = atob(b64);
     const bytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
     return bytes.buffer;
   }
- 
-  function base64UrlEncode(uint8) {
-    let binary = '';
-    for (let i = 0; i < uint8.length; i++) binary += String.fromCharCode(uint8[i]);
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
- 
-  function base64UrlDecode(str) {
-    str = str.replace(/-/g, '+').replace(/_/g, '/');
-    while (str.length % 4) str += '=';
-    const binary = atob(str);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    return bytes;
-  }
- 
+
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
   }
- 
+
 })();
 </script>
 </body>
 </html>
- 
