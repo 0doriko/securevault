@@ -1,2 +1,2 @@
 # securevault
-Encrypted secret sharing tool for DBX internal team use
+Encrypted secret sharing tool for internal team use
